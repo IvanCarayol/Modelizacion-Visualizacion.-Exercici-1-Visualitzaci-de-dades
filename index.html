@@ -106,8 +106,8 @@
         <div class="card-header">
           <span style="color: var(--truth-blue);">2. Realidad Matemática</span>
           <div class="mini-toggle" id="date-toggle">
-            <button id="btn-2sept" class="active">2 Sept (Publicación)</button>
-            <button id="btn-3sept">3 Sept (Corte)</button>
+            <button id="btn-2sept" class="active">Ver 2 de Sept. (Día de la Noticia)</button>
+            <button id="btn-3sept">Ver 3 de Sept. (Día del Empate Real)</button>
           </div>
         </div>
         <div class="card-sub" id="truth-desc">Eje 0. El 2 de septiembre Meloni perdía (1411 días). La publicación se adelantó.</div>
@@ -131,7 +131,6 @@ let topData = [];
 let timelineData = [];
 let truthMode = '2sept';
 
-// Se ha optimizado el margen inferior para que sea más compacto sin cortar el eje
 const m = { t: 30, r: 15, b: 60, l: 45 }; 
 const tip = d3.select("#tip");
 
@@ -146,7 +145,7 @@ function createSvg(containerSelector, height) {
 
 const lieChart = createSvg("#chart-lie", 350);
 const truthChart = createSvg("#chart-truth", 350);
-const scatChart = createSvg("#chart-scatter", 220); // <-- Altura reducida a 220 para ser un gráfico panorámico fino
+const scatChart = createSvg("#chart-scatter", 220); 
 
 const xBars = d3.scaleBand().padding(0.32);
 const yLie = d3.scaleLinear().domain([650, 1500]).nice();
@@ -245,7 +244,6 @@ function initScatterChart() {
 function updateTruthAndScatter() {
   const t = d3.transition().duration(600).ease(d3.easeCubicOut);
   
-  // Actualizar KPI 1 dinámicamente
   const kpiBox = document.getElementById("kpi1-box");
   const kpiTitle = document.getElementById("kpi1-title");
   const kpiVal = document.getElementById("kpi1-val");
@@ -265,7 +263,6 @@ function updateTruthAndScatter() {
     kpiSub.innerText = "Empate técnico exacto con Berlusconi II";
   }
 
-  // Actualizar Barras Realidad
   const bars = truthChart.g.selectAll(".bar-truth").data(topData, d => d.id);
   bars.join(enter => enter.append("rect").attr("class", d => `bar-truth bar-hitbox id-${d.id}`).attr("rx", 3)
       .attr("x", d => xBars(d.gov)).attr("width", xBars.bandwidth())
@@ -276,7 +273,6 @@ function updateTruthAndScatter() {
     .attr("height", d => Math.max(0, truthChart.ih - yTruth(getTruthDays(d))))
     .attr("fill", d => getTruthColor(d));
 
-  // Actualizar Etiquetas Realidad
   const labels = truthChart.g.selectAll(".label-truth").data(topData, d => d.id);
   labels.join(enter => enter.append("text").attr("class", d => `label-truth label-hitbox id-${d.id}`)
       .attr("x", d => xBars(d.gov) + xBars.bandwidth()/2).attr("text-anchor", "middle").attr("font-size", 11).attr("font-weight", 700))
@@ -285,7 +281,6 @@ function updateTruthAndScatter() {
     .attr("y", d => yTruth(getTruthDays(d)) - 8)
     .attr("fill", d => (d.gov === 'Meloni' || d.gov === 'Berlusconi II') ? getTruthColor(d) : "var(--neutral-dark)");
 
-  // Actualizar Histórico
   const circles = scatChart.g.selectAll(".circle-hist").data(timelineData, d => d.id);
   circles.join(enter => enter.append("circle").attr("class", d => `circle-hist circle-hitbox id-${d.id}`)
       .attr("cx", d => xScat(d.year)).attr("r", 5)
